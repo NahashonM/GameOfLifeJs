@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Canvas tutorial</title>
+
+    <style> 
+      body {  
+        padding: 0;
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .help-button, .help-container{
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .help-button { 
+        top: 0;
+        width: 100vw;
+        display: flex;
+        justify-content: right;
+      }
+
+      .help-button > button {
+        width: 100px;
+        height: 50px;
+        margin: 20px;
+        color: green;
+        font-size: 1.2em;
+        border-radius: 20px;
+        pointer-events: all;
+      }
+
+       .help-container {
+        top: 60px;
+        width: 100vw;
+        pointer-events: none;
+        display: flex;
+        justify-content: center;
+      }
+
+      .help {
+        width: 400px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 5px 5px 15px 0px rgba( 250, 200, 150, 0.5);
+        padding: 30px
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="board-canvas"></canvas>
+
+    <div class="help-button">
+      <button id="help-button">Help</button>
+    </div>
+
+    <div id="help" class="help-container">
+      <div class="help">
+            <div class="controls">
+              <p>Rules</p>
+              <ul>
+                <li>Any live cell with more than 3 neighbours dies due to overpopulation</li>
+                <li>Any live cell with 0 neighbours dies due to loneliness</li>
+                <li>Any dead cell with exactly 2 neighbours is reborn</li>
+              </ul>
+            </div>
+
+            <div class="controls">
+              <p>Controls</p>
+              <ul>
+                <li>Click hold and drag the mouse to move the field. Optionally use keyboard arrow keys</li>
+                <li>Toggle cells by pressing the Left Mouse Button. Optionally: move to cell with keyboard and press Enter Key</li>
+                <li>Press the space bar key to pause simulation</li>
+                <li>Press the Help button on the top right to toggle this help on or off</li>
+              </ul>
+            </div>
+      </div>
+    </div>
+
+  </body>
+  
+  <script type="text/javascript" src="/gameoflifeJS/board.js" onerror=""></script>
+  <script type="text/javascript" src="/gameoflifeJS/index.js" onerror=""></script>
+
+</html>
