@@ -13,6 +13,9 @@ class Board {
 		this.cell_size = cell_size;
 		this.line_size = line_size;
 
+		this.max_cell_size = 80
+		this.min_cell_size = 4
+
 		this.bg_color = bg_color;
 		this.line_color = line_color;
 
@@ -49,6 +52,17 @@ class Board {
 		delete this.cells[row + ":" + col]
 	}
 
+	zoomWorld( magnifyBy ) {
+		let newCellSize = this.cell_size + magnifyBy
+		this.cell_size = Math.max(this.min_cell_size, Math.min(newCellSize, this.max_cell_size))
+	}
+
+	resetWorld() {
+		this.cells = {}
+		this.new_cells = {}
+		this.dead_cells = {}
+	}
+
 	// This function handles board scrolling
 	// Works by modifying the offset of the section in the infinite board to be viewed
 	// This function should only be called from scrolling events 
@@ -74,6 +88,8 @@ class Board {
 
 		if (this.isCellAlive(row, col)) this.killCell(row, col )
 		else this.addCellToCells(row, col )
+
+		return [row, col]
 	}
 
 	// This member function handles rendering cells on the board

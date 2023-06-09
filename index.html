@@ -1,94 +1,182 @@
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>GameOfLife</title>
 
-    <style> 
-      body {  
-        padding: 0;
-        margin: 0;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-      }
+<head>
+	<meta charset="utf-8" />
+	<title>GameOfLife</title>
 
-      .help-button, .help-container{
-        position: absolute;
-        pointer-events: none;
-      }
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+			width: 100vw;
+			height: 100vh;
+			overflow: hidden;
+			position: relative;
+		}
 
-      .help-button { 
-        top: 0;
-        width: 100vw;
-        display: flex;
-        justify-content: right;
-      }
+		#canvas-container {
+			position: fixed;
+			z-index: 10;
+			overflow: hidden;
+		}
 
-      .help-button > button {
-        width: 100px;
-        height: 50px;
-        margin: 20px;
-        color: green;
-        font-size: 1.2em;
-        border-radius: 20px;
-        pointer-events: all;
-      }
+		#tools-container {
+			position: fixed;
+			right: 0;
+			z-index: 20;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: end;
+		}
 
-       .help-container {
-        top: 60px;
-        width: 100vw;
-        pointer-events: none;
-        display: flex;
-        justify-content: center;
-      }
+		.tools {
+			display: flex;
+			margin: 4px;
+			justify-content: center;
+			align-items: center;
+			flex-direction: row;
+			background-color: #ffffff44;
+			border-radius: 20px;
+			padding: 0 8px 0px 8px;
+		}
+		
+		.tools > .button {
+			height: 50px;
+			margin-left: 4px;
+			margin-right: 4px;
+			cursor: pointer;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			font-size: 1.5em;
+			color: white;
+		}
 
-      .help {
-        width: 400px;
-        background-color: white;
-        border-radius: 15px;
-        box-shadow: 5px 5px 15px 0px rgba( 250, 200, 150, 0.5);
-        padding: 30px
-      }
+		.button:hover {
+			scale: 1.1;
+		}
 
-      .hidden {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="board-canvas"></canvas>
+		.tools > #play-button,
+		.tools > #pause-button {
+			width: 50px;
+		}
 
-    <div class="help-button">
-      <button id="help-button">Help</button>
-    </div>
+		.tools > #pause-button {
+			height: 35px;
+		}
 
-    <div id="help" class="help-container">
-      <div class="help">
-            <div class="controls">
-              <p>Rules</p>
-              <ul>
-                <li>Any live cell with more than 3 neighbours dies due to overpopulation</li>
-                <li>Any live cell with 0 neighbours dies due to loneliness</li>
-                <li>Any dead cell with exactly 2 neighbours is reborn</li>
-              </ul>
-            </div>
+		.tools > #fast-forward {
+			rotate: 180deg;
+		}
 
-            <div class="controls">
-              <p>Controls</p>
-              <ul>
-                <li>Click hold and drag the mouse to move the field. Optionally use keyboard arrow keys</li>
-                <li>Toggle cells by pressing the Left Mouse Button. Optionally: move to cell with keyboard and press Enter Key</li>
-                <li>Press the space bar key to pause simulation</li>
-                <li>Press the Help button on the top right to toggle this help on or off</li>
-              </ul>
-            </div>
-      </div>
-    </div>
 
-  </body>
-  
-  <script type="text/javascript" src="board.js" onerror=""></script>
-  <script type="text/javascript" src="index.js" onerror=""></script>
+		#help-msg-container {
+			position: absolute;
+			z-index: 15;
+			display: flex;
+			width: 100vw;
+			height: 80vh;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#help-msg-inner {
+			position: relative;
+			width: 400px;
+			background-color: white;
+			border-radius: 15px;
+			box-shadow: 5px 5px 15px 0px rgba(250, 200, 150, 0.5);
+			padding: 30px;
+		}
+
+		#help-msg-close-container {
+			position: absolute;
+			right: 0;
+			top: 0;
+			margin-top: 15px;
+			margin-right: 15px;
+		}
+
+		#help-msg-close {
+			height: 25px;
+			width: 25px;
+		}
+
+		#help-msg-close:hover {
+			scale: 1.2;
+		}
+
+
+		.hidden {
+			display: none;
+			visibility: none;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div id="canvas-container">
+		<canvas id="board-canvas"></canvas>
+	</div>
+
+	<div id="tools-container">
+		<div class="tools">
+			<img id="play-button" alt="play" class="button" src="assets/play.svg" />
+			<img id="pause-button" alt="pause" class="button hidden" src="assets/pause.svg" />
+
+			<img id="fast-backward" alt="slow" class="button" src="assets/speed.svg" />
+			<img id="fast-forward" alt="fast" class="button" src="assets/speed.svg" />
+
+			<img id="clear-button" alt="clear" class="button" src="assets/clean.svg" />
+		</div>
+		
+		<div class="tools">
+			<img id="zoom-in" class="button" alt="[zoom +]"  src="assets/zoom-in.svg" />
+			<img id="zoom-out" class="button" alt="[zoom -]" src="assets/zoom-out.svg" />
+		</div>
+
+		<div class="tools">
+			<img id="help-button" class="button" alt="help" src="assets/help.svg" />
+		</div>
+	</div>
+
+	<div id="help-msg-outer">
+		<div id="help-msg-container" class="hidden">
+			<div id="help-msg-inner">
+				<div id="help-msg-close-container">
+					<img id="help-msg-close" class="button" alt="close" src="assets/close.svg" />
+				</div>
+
+				<div class="controls">
+					<p>Rules</p>
+					<ul>
+						<li>Any live cell with more than 3 neighbours dies due to overpopulation</li>
+						<li>Any live cell with 0 neighbours dies due to loneliness</li>
+						<li>Any dead cell with exactly 2 neighbours is reborn</li>
+					</ul>
+				</div>
+
+				<div class="controls">
+					<p>Controls</p>
+					<ul>
+						<li>Click hold and drag the mouse to move the field. Optionally use keyboard arrow keys</li>
+						<li>Toggle cells by pressing the Left Mouse Button. Optionally: move to cell with keyboard and
+							press
+							Enter Key</li>
+						<li>Press the space bar key to pause simulation</li>
+						<li>Press the Help button on the top right to toggle this help on or off</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+<script type="text/javascript" src="board.js" onerror=""></script>
+<script type="text/javascript" src="index.js" onerror=""></script>
 
 </html>
